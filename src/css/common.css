@@ -1,5 +1,39 @@
-.title {
-    font-size: large;
-    color: red;
+/* .container {
+    width: 1200px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin: 0 auto;
+} */
+
+img {
+    width: 100%;
+    height: auto;
+}
+
+.gallery {
+
+    flex-wrap: wrap;
+    padding-top: 90px;
+    padding-bottom: 40px;
+    display: flex;
+}
+
+.photo-card {
+
+    width: calc(25% - 40px);
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    margin-left: 30px;
+    display: flex;
+}
+
+
+.search-form {
     align-items: center;
+}
+
+.info {
+    display: flex;
+    gap: 20px;
 }
