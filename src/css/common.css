@@ -45,6 +45,7 @@ img:hover {
     margin: 0 auto;
     align-items: center;
     justify-content: center;
+    background-color: rgb(206, 194, 221);
 }
 
 .info {
@@ -61,4 +62,15 @@ img:hover {
 
 .btn.is-hidden {
     display: none;
+}
+
+
+button {
+    padding: 10px 30px;
+    background-color: #725ad3;
+}
+
+input {
+    padding: 10px;
+    margin-right: 10px;
 }

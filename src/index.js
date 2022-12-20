@@ -9,7 +9,7 @@ const URL = 'https://pixabay.com/api/?image_type=photo&orientation=horizontal&sa
 
 
 const form = document.querySelector('.search-form');
-const gallery = document.querySelector('.gallery');
+const galleryBox = document.querySelector('.gallery');
 const btnLoadMore = document.querySelector('.btn');
 
 
@@ -21,10 +21,16 @@ form.addEventListener('submit', submitForm);
 btnLoadMore.addEventListener('click', clickLoadMore);
 
 
+let gallery = new SimpleLightbox('.gallery-item', { 
+  captionsData: 'alt',
+  captionDelay: 250 
+});
+
+
 function submitForm (e) {
     e.preventDefault();
 
-    gallery.innerHTML = '';
+    galleryBox.innerHTML = '';
 
     value = e.target.elements.searchQuery.value.trim();
 
@@ -47,6 +53,7 @@ function submitForm (e) {
         btnLoadMore.classList.remove('is-hidden')
       }
       onMarkupPhotos(hits)
+      gallery.refresh()
     }).catch(err => console.log(err))
 } 
 
@@ -63,8 +70,9 @@ function clickLoadMore(e) {
       btnLoadMore.classList.add('is-hidden')
       Notify.warning("We're sorry, but you've reached the end of search results.")
     }
-    onMarkupPhotos(hits)
-  })
+    onMarkupPhotos(hits);
+    gallery.refresh();
+  }).catch(err => console.log(err))
 }
 
 
@@ -86,8 +94,9 @@ function onMarkupPhotos(photos) {
         comments,
         downloads,
       }) => {
-        return `<div class="photo-card">
-              <a href="${largeImageURL}"> 
+        return `
+        <div class="photo-card">
+              <a class="gallery-item" href="${largeImageURL}"> 
                 <img src="${webformatURL}" alt="${tags}" loading="lazy" />
               </a>
               <div class="info">
@@ -109,8 +118,11 @@ function onMarkupPhotos(photos) {
     )
     .join('');
 
-  gallery.insertAdjacentHTML('beforeend', markupPhotos);
+    galleryBox.insertAdjacentHTML('beforeend', markupPhotos);
 }
+
+
+
 
 
 
