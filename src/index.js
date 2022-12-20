@@ -37,6 +37,7 @@ function submitForm (e) {
     page = 1;
     if (value === '') {
       Notify.warning('Write something for search!')
+      btnLoadMore.classList.add('is-hidden')
       return 
     }
     console.log(page);
@@ -81,6 +82,7 @@ function onMarkupPhotos(photos) {
 
   if (photos.length === 0) {
     return notFound();
+
   }
 
   const markupPhotos = photos
