@@ -3,38 +3,69 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import Notiflix, { Notify } from 'notiflix';
 
+
 const API_KEY = '32143605-ffafb661b3a663225209c63df';
 const URL = 'https://pixabay.com/api/?image_type=photo&orientation=horizontal&safesearch=true';
 
-  // const API = axios.create({
-  //     baseURL: 'https://pixabay.com/api/?image_type=photo&orientation=horizontal&safesearch=true',
-  //     headers: {
-  //       "X-Api-Key": API_KEY
-  //     }
-  //   });
 
 const form = document.querySelector('.search-form');
-const gallery = document.querySelector('.gallery')
+const gallery = document.querySelector('.gallery');
+const btnLoadMore = document.querySelector('.btn');
 
-form.addEventListener('submit', submitForm)
+
+let page = '';
+let value = '';
+
+
+form.addEventListener('submit', submitForm);
+btnLoadMore.addEventListener('click', clickLoadMore);
+
 
 function submitForm (e) {
     e.preventDefault();
 
     gallery.innerHTML = '';
 
-    const value = e.target.elements.searchQuery.value;
+    value = e.target.elements.searchQuery.value.trim();
 
-    form.reset()
+    page = 1;
+    if (value === '') {
+      Notify.warning('Write something for search!')
+      return 
+    }
+    console.log(page);
+    form.reset();
 
-    getNews(value).then(({hits, totalHits}) => {
-      console.log(hits);
-      console.log(totalHits);
-      onMarkupPhotos(hits)})
+    fetchPhotos(value).then(({hits, totalHits}) => {
+
+      if (totalHits > 0) {
+        totalFound(totalHits)
+      }
+      if (totalHits < 40) {
+        btnLoadMore.classList.add('is-hidden')
+      } else {
+        btnLoadMore.classList.remove('is-hidden')
+      }
+      onMarkupPhotos(hits)
+    }).catch(err => console.log(err))
+} 
+
+
+
+function clickLoadMore(e) {
+  fetchPhotos(value).then(({hits, totalHits}) => {
+
+    console.log(hits);
+    console.log(totalHits);
+    console.log(page);
+
+    if (page * 40 >= totalHits) {
+      btnLoadMore.classList.add('is-hidden')
+      Notify.warning("We're sorry, but you've reached the end of search results.")
+    }
+    onMarkupPhotos(hits)
+  })
 }
-
-
-
 
 
 
@@ -82,20 +113,22 @@ function onMarkupPhotos(photos) {
 }
 
 
-  function getNews(query) {
-    return axios.get(`${URL}&key=${API_KEY}&q=${query}&page=1&per_page=40`)
-    .then(res => {
-      return res.data})
-    // }).then(({hits, totalHits}) => {
-    //   return {hits, totalHits}
-    // })
+
+async function fetchPhotos(query) {
+  const response = await axios.get(`${URL}&key=${API_KEY}&q=${query}&page=${page}&per_page=40`)
+  const result = await response.data;
+
+  page += 1;
+  
+  return result;
 };
+
+
 
 
 function notFound() {
   return Notify.failure('Sorry, there are no images matching your search query. Please try again.')
 }
-
 
 function totalFound(totalHits) {
   return Notify.success(`Hooray! We found ${totalHits} images.`)
